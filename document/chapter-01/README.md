@@ -69,5 +69,91 @@
 
 * 공연료 청구서 출력 코드
 ```java
+package toby.salon.refactoring.chapter1;
+
+import toby.salon.refactoring.chapter1.dto.*;
+
+public class Statement {
+
+    private Invoice invoice;
+    private Plays plays;
+
+    public Statement(Invoice invoice, Plays plays) {
+        this.invoice = invoice;
+        this.plays = plays;
+    }
+
+    public String statement(Invoice invoice, Plays plays) throws Exception {
+
+        int totalAmount = 0;
+        int volumeCredits = 0;
+
+        StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", invoice.customer()));
+
+        for (Performance perf : invoice.performances()) {
+            Play play = plays.get(perf.playId());
+            int thisAmount = 0;
+
+            switch (play.type()) {
+                case TRAGEDY: //비극
+                    thisAmount = 40000;
+                    if (perf.audience() > 30) {
+                        thisAmount += 1000 * (perf.audience() - 30);
+                    }
+                    break;
+                case COMEDY: // 희극
+                    thisAmount = 30000;
+                    if (perf.audience() > 20) {
+                        thisAmount += 10000 + 500 * (perf.audience() - 20);
+                    }
+                    thisAmount += 300 * perf.audience();
+                    break;
+                default:
+                    throw new Exception((String.format("알 수 없는 장르 : %s", play.type())));
+            }
+
+            //포인트를 적립한다.
+            volumeCredits += Math.max(perf.audience() - 30, 0);
+
+            //희극 관객 5명마다 추가 포인트를 제공한다.
+            if (play.type() == Type.COMEDY) volumeCredits += Math.floor(perf.audience() / 5);
+
+            //청구 내역 출력
+            result.append(String.format("%s: $%d (%d석)\n", play.name(), thisAmount / 100, perf.audience()));
+            totalAmount += thisAmount;
+        }
+        result.append(String.format("총액: $%d\n", totalAmount / 100));
+        result.append(String.format("적립 포인트: %d점\n", volumeCredits));
+
+        return result.toString();
+    }
+
+}
+```
+## 1.2 예시 프로그램을 본 소감
+
+예시는 간단해서 이해 가능하지만, 규모가 크다면 이해하기 어려운 요소들이 있다.
+
+코드가 지저분하면, 기계는 이해하고 동작하지만 인간은 그렇지 않다.
+
+리팩토링 통해 버그 발생이 낮고, 수정하기 쉬운 코드로 전환가능 하다.
 
 ```
+ 프로그램이 새로운 기능을 추가하기에 편한 구조가 아니라면, 먼저 기능을 추가하기 쉬운 형태로 리팩터링하고 나서 원하는 기능을 추가한다.
+```
+
+새로운 요구 사항의 추가
+
+1. HTML 출력
+2. 연극 장르의 추가
+
+변경이 발생하면 코드를 수정해야 하고, 이 떄 리팩터링의 필요성이 대두된다.
+
+## 1.3 리팩터링의 첫 단계
+
+### 리팩터링의 첫 단계, 테스트 코드
+
+- 테스트 코드 수행을 통해 리팩터링 후 코드 안전성을 확보한다.
+
+
+
