@@ -39,7 +39,7 @@ class StatementTest {
                 "적립 포인트: 47점\n";
 
         //when
-        String result = statement.statement(invoice, plays);
+        String result = statement.statement(invoice);
         //then
         assertEquals(answer, result);
 
