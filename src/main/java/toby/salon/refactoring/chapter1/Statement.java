@@ -25,10 +25,7 @@ public class Statement {
             thisAmount = amountFor(perf);
 
             //포인트를 적립한다.
-            volumeCredits += Math.max(perf.audience() - 30, 0);
-
-            //희극 관객 5명마다 추가 포인트를 제공한다.
-            if (playFor(perf).type() == Type.COMEDY) volumeCredits += Math.floor(perf.audience() / 5);
+            volumeCredits += volumeCreditsFor(perf);
 
             //청구 내역 출력
             result.append(String.format("%s: $%d (%d석)\n", playFor(perf).name(), thisAmount / 100, perf.audience()));
@@ -38,6 +35,14 @@ public class Statement {
         result.append(String.format("적립 포인트: %d점\n", volumeCredits));
 
         return result.toString();
+    }
+
+    private int volumeCreditsFor(Performance aPerformance) throws Exception {
+        int result = 0;
+        result += Math.max(aPerformance.audience() - 30, 0);
+        //희극 관객 5명마다 추가 포인트를 제공한다.
+        if (playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
+        return result;
     }
 
     private int amountFor(Performance aPerformance) throws Exception {
