@@ -2,6 +2,9 @@ package toby.salon.refactoring.chapter1;
 
 import toby.salon.refactoring.chapter1.dto.*;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class Statement {
 
     private Invoice invoice;
@@ -15,26 +18,34 @@ public class Statement {
     public String statement(Invoice invoice) throws Exception {
 
         int totalAmount = 0;
-        int volumeCredits = 0;
-
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", invoice.customer()));
 
         for (Performance perf : invoice.performances()) {
-            int thisAmount = 0;
-
-            thisAmount = amountFor(perf);
-
             //포인트를 적립한다.
-            volumeCredits += volumeCreditsFor(perf);
-
-            //청구 내역 출력
-            result.append(String.format("%s: $%d (%d석)\n", playFor(perf).name(), thisAmount / 100, perf.audience()));
-            totalAmount += thisAmount;
+            result.append(String.format("%s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
         }
-        result.append(String.format("총액: $%d\n", totalAmount / 100));
-        result.append(String.format("적립 포인트: %d점\n", volumeCredits));
+            totalAmount += appleSource();
+
+        result.append(String.format("총액: %s\n", usd(totalAmount)));
+        result.append(String.format("적립 포인트: %d점\n", totalVolumeCredits()));
 
         return result.toString();
+    }
+
+    private int appleSource() throws Exception {
+        int totalAmount = 0;
+        for (Performance perf : invoice.performances()) {
+            totalAmount += amountFor(perf);
+        }
+        return totalAmount;
+    }
+
+    private int totalVolumeCredits() throws Exception {
+        int volumeCredits = 0;
+        for (Performance perf : invoice.performances()) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+        return volumeCredits;
     }
 
     private int volumeCreditsFor(Performance aPerformance) throws Exception {
@@ -47,6 +58,7 @@ public class Statement {
 
     private int amountFor(Performance aPerformance) throws Exception {
         int result;
+
         switch (playFor(aPerformance).type()) {
             case TRAGEDY: //비극
                 result = 40000;
@@ -69,6 +81,10 @@ public class Statement {
 
     private Play playFor(Performance aPerformance) throws Exception {
         return plays.get(aPerformance.playId());
+    }
+
+    private String usd(int amount) {
+     return   NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);
     }
 
 }
