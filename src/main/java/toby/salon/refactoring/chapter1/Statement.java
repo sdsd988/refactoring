@@ -4,24 +4,28 @@ import toby.salon.refactoring.chapter1.dto.*;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Map;
 
 public class Statement {
 
     private Invoice invoice;
     private Plays plays;
+    private StatementData statementData;
 
-    public Statement(Invoice invoice, Plays plays) {
+    public Statement(StatementData data,Invoice invoice, Plays plays) {
+        this.statementData = data;
         this.invoice = invoice;
         this.plays = plays;
     }
 
 
-    public String statement(Invoice invoice) throws Exception {
-        return renderPlainText(invoice);
+    public String statement(StatementData data,Invoice invoice,Plays plays) throws Exception {
+
+        return renderPlainText(data, invoice,plays);
     }
 
-    private String renderPlainText(Invoice invoice) throws Exception {
-        StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", invoice.customer()));
+    private String renderPlainText(StatementData data, Invoice invoice, Plays plays) throws Exception {
+        StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", data.invoice().customer()));
 
         for (Performance perf : invoice.performances()) {
             result.append(String.format("%s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
