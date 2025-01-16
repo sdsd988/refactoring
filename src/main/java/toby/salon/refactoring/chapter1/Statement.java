@@ -19,12 +19,12 @@ public class Statement {
     }
 
 
-    public String statement(StatementData data,Invoice invoice,Plays plays) throws Exception {
+    public String statement(StatementData data,Plays plays) throws Exception {
 
-        return renderPlainText(data, invoice,plays);
+        return renderPlainText(data,plays);
     }
 
-    private String renderPlainText(StatementData data, Invoice invoice, Plays plays) throws Exception {
+    private String renderPlainText(StatementData data, Plays plays) throws Exception {
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", data.invoice().customer()));
 
         for (Performance perf : invoice.performances()) {
