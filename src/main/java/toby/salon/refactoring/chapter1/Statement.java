@@ -17,7 +17,6 @@ public class Statement {
 
     public String statement(Invoice invoice) throws Exception {
 
-        int totalAmount = 0;
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", invoice.customer()));
 
         for (Performance perf : invoice.performances()) {
