@@ -20,7 +20,6 @@ public class Statement {
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", invoice.customer()));
 
         for (Performance perf : invoice.performances()) {
-            //포인트를 적립한다.
             result.append(String.format("%s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
         }
 
