@@ -15,8 +15,12 @@ public class Statement {
         this.plays = plays;
     }
 
-    public String statement(Invoice invoice) throws Exception {
 
+    public String statement(Invoice invoice) throws Exception {
+        return renderPlainText(invoice);
+    }
+
+    private String renderPlainText(Invoice invoice) throws Exception {
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", invoice.customer()));
 
         for (Performance perf : invoice.performances()) {
@@ -36,7 +40,6 @@ public class Statement {
         }
         return result;
     }
-
     private int totalVolumeCredits() throws Exception {
         int volumeCredits = 0;
         for (Performance perf : invoice.performances()) {
@@ -44,7 +47,6 @@ public class Statement {
         }
         return volumeCredits;
     }
-
     private int volumeCreditsFor(Performance aPerformance) throws Exception {
         int result = 0;
         result += Math.max(aPerformance.audience() - 30, 0);
@@ -52,7 +54,6 @@ public class Statement {
         if (playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
         return result;
     }
-
     private int amountFor(Performance aPerformance) throws Exception {
         int result;
 
@@ -75,13 +76,11 @@ public class Statement {
         }
         return result;
     }
-
     private Play playFor(Performance aPerformance) throws Exception {
         return plays.get(aPerformance.playId());
     }
-
     private String usd(int amount) {
-     return   NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);
+        return NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);
     }
 
 }
