@@ -10,10 +10,10 @@ public class Statement {
 
     private Invoice invoice;
     private Plays plays;
-    private StatementData statementData;
+    private StatementData data;
 
     public Statement(StatementData data,Invoice invoice, Plays plays) {
-        this.statementData = data;
+        this.data = data;
         this.invoice = invoice;
         this.plays = plays;
     }
@@ -27,7 +27,7 @@ public class Statement {
     private String renderPlainText(StatementData data, Plays plays) throws Exception {
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", data.invoice().customer()));
 
-        for (Performance perf : invoice.performances()) {
+        for (Performance perf : data.invoice().performances()) {
             result.append(String.format("%s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
         }
 
@@ -39,14 +39,14 @@ public class Statement {
 
     private int totalAmount() throws Exception {
         int result = 0;
-        for (Performance perf : invoice.performances()) {
+        for (Performance perf : data.invoice().performances()) {
             result += amountFor(perf);
         }
         return result;
     }
     private int totalVolumeCredits() throws Exception {
         int volumeCredits = 0;
-        for (Performance perf : invoice.performances()) {
+        for (Performance perf : data.invoice().performances()) {
             volumeCredits += volumeCreditsFor(perf);
         }
         return volumeCredits;
