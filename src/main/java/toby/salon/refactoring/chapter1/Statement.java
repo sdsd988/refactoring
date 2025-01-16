@@ -24,20 +24,19 @@ public class Statement {
             //포인트를 적립한다.
             result.append(String.format("%s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
         }
-            totalAmount += appleSource();
 
-        result.append(String.format("총액: %s\n", usd(totalAmount)));
+        result.append(String.format("총액: %s\n", usd(totalAmount())));
         result.append(String.format("적립 포인트: %d점\n", totalVolumeCredits()));
 
         return result.toString();
     }
 
-    private int appleSource() throws Exception {
-        int totalAmount = 0;
+    private int totalAmount() throws Exception {
+        int result = 0;
         for (Performance perf : invoice.performances()) {
-            totalAmount += amountFor(perf);
+            result += amountFor(perf);
         }
-        return totalAmount;
+        return result;
     }
 
     private int totalVolumeCredits() throws Exception {
