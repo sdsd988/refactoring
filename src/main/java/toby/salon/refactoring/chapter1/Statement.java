@@ -17,7 +17,6 @@ public class Statement {
         this.plays = plays;
     }
 
-
     public String statement() throws Exception {
         return renderPlainText(data);
     }
@@ -26,7 +25,7 @@ public class Statement {
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", data.invoice().customer()));
 
         for (Performance perf : data.invoice().performances()) {
-            result.append(String.format("%s: %s (%d석)\n", data.playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
+            result.append(String.format("%s: %s (%d석)\n", data.playFor(perf).name(), usd(data.amountFor(perf)), perf.audience()));
         }
 
         result.append(String.format("총액: %s\n", usd(totalAmount())));
@@ -38,7 +37,7 @@ public class Statement {
     private int totalAmount() throws Exception {
         int result = 0;
         for (Performance perf : data.invoice().performances()) {
-            result += amountFor(perf);
+            result += data.amountFor(perf);
         }
         return result;
     }
@@ -56,31 +55,7 @@ public class Statement {
         if (data.playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
         return result;
     }
-    private int amountFor(Performance aPerformance) throws Exception {
-        int result;
 
-        switch (data.playFor(aPerformance).type()) {
-            case TRAGEDY: //비극
-                result = 40000;
-                if (aPerformance.audience() > 30) {
-                    result += 1000 * (aPerformance.audience() - 30);
-                }
-                break;
-            case COMEDY: // 희극
-                result = 30000;
-                if (aPerformance.audience() > 20) {
-                    result += 10000 + 500 * (aPerformance.audience() - 20);
-                }
-                result += 300 * aPerformance.audience();
-                break;
-            default:
-                throw new Exception((String.format("알 수 없는 장르 : %s", data.playFor(aPerformance).type())));
-        }
-        return result;
-    }
-    private Play playFor(Performance aPerformance) throws Exception {
-        return plays.get(aPerformance.playId());
-    }
     private String usd(int amount) {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);
     }
