@@ -1,7 +1,9 @@
 package toby.salon.refactoring.chapter1.dto;
 
 
+import toby.salon.refactoring.chapter1.calculator.ComedyCalculator;
 import toby.salon.refactoring.chapter1.calculator.PerformanceCalculator;
+import toby.salon.refactoring.chapter1.calculator.TragedyCalculator;
 
 public record StatementData(
         Invoice invoice,
@@ -12,16 +14,26 @@ public record StatementData(
         return plays.get(performance.playId());
     }
 
+    private PerformanceCalculator getPerformanceCalculator(Performance aPerformance,Play aPlay) throws Exception {
+        switch (aPlay.type()) {
+            case TRAGEDY -> {
+                return new TragedyCalculator(aPerformance, aPlay);
+            }
+            case COMEDY -> {
+                return new ComedyCalculator(aPerformance, aPlay);
+            }
+            default -> {
+                throw new Exception((String.format("알 수 없는 장르 : %s", aPlay.type())));
+            }
+        }
+    }
+
     public int amountFor(Performance aPerformance) throws Exception {
-        return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount();
+        return getPerformanceCalculator(aPerformance, playFor(aPerformance)).amount();
     }
 
     public int volumeCreditsFor(Performance aPerformance) throws Exception {
-        int result = 0;
-        result += Math.max(aPerformance.audience() - 30, 0);
-        //희극 관객 5명마다 추가 포인트를 제공한다.
-        if (playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
-        return result;
+      return  getPerformanceCalculator(aPerformance, playFor(aPerformance)).volumeCredits();
     }
 
     public int totalVolumeCredits() throws Exception {
