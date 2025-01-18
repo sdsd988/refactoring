@@ -42,18 +42,25 @@ public record StatementData(
     }
 
     public int totalVolumeCredits() throws Exception {
-        int volumeCredits = 0;
-        for (Performance perf : invoice().performances()) {
-            volumeCredits += volumeCreditsFor(perf);
-        }
-        return volumeCredits;
+        return invoice.performances().stream().mapToInt(perf -> {
+            try {
+                return volumeCreditsFor(perf);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).sum();
     }
 
     public int totalAmount() throws Exception {
-        int result = 0;
-        for (Performance perf : invoice().performances()) {
-            result += amountFor(perf);
-        }
-        return result;
+        return invoice().performances()
+                .stream()
+                .mapToInt(perf -> {
+                    try {
+                        return amountFor(perf);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .sum();
     }
 }
