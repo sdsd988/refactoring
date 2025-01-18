@@ -29,6 +29,8 @@ class StatementTest {
         playMap.put("othello", new Play("Othello", Type.TRAGEDY));
         Plays plays = new Plays(playMap);
 
+        StatementData statementData = new StatementData(invoice,plays);
+
         Statement statement = new Statement(invoice,plays);
 
         String answer = "청구내역 (고객명: BigCo)\n" +
@@ -39,7 +41,7 @@ class StatementTest {
                 "적립 포인트: 47점\n";
 
         //when
-        String result = statement.statement(invoice);
+        String result = statement.statement();
         //then
         assertEquals(answer, result);
 

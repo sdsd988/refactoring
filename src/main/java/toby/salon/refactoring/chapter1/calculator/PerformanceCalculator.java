@@ -2,6 +2,7 @@ package toby.salon.refactoring.chapter1.calculator;
 
 import toby.salon.refactoring.chapter1.dto.Performance;
 import toby.salon.refactoring.chapter1.dto.Play;
+import toby.salon.refactoring.chapter1.dto.Type;
 
 import static toby.salon.refactoring.chapter1.dto.Type.COMEDY;
 import static toby.salon.refactoring.chapter1.dto.Type.TRAGEDY;
@@ -18,7 +19,6 @@ public class PerformanceCalculator {
 
     public int amount() throws Exception {
         int result;
-
         switch (play.type()) {
             case TRAGEDY: //비극
                 result = 40000;
@@ -37,7 +37,13 @@ public class PerformanceCalculator {
                 throw new Exception((String.format("알 수 없는 장르 : %s", play.type())));
         }
         return result;
+    }
 
-
+    public int volumeCredits() {
+        int result = 0;
+        result += Math.max(performance.audience() - 30, 0);
+        //희극 관객 5명마다 추가 포인트를 제공한다.
+        if (play.type() == Type.COMEDY) result += Math.floor(performance.audience() / 5);
+        return result;
     }
 }
