@@ -4,7 +4,6 @@ import toby.salon.refactoring.chapter1.dto.*;
 
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Map;
 
 public class Statement {
 
@@ -19,16 +18,15 @@ public class Statement {
     }
 
 
-    public String statement(StatementData data,Plays plays) throws Exception {
-
-        return renderPlainText(data,plays);
+    public String statement() throws Exception {
+        return renderPlainText(data);
     }
 
-    private String renderPlainText(StatementData data, Plays plays) throws Exception {
+    private String renderPlainText(StatementData data) throws Exception {
         StringBuilder result = new StringBuilder(String.format("청구내역 (고객명: %s)\n", data.invoice().customer()));
 
         for (Performance perf : data.invoice().performances()) {
-            result.append(String.format("%s: %s (%d석)\n", playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
+            result.append(String.format("%s: %s (%d석)\n", data.playFor(perf).name(), usd(amountFor(perf)), perf.audience()));
         }
 
         result.append(String.format("총액: %s\n", usd(totalAmount())));
@@ -55,13 +53,13 @@ public class Statement {
         int result = 0;
         result += Math.max(aPerformance.audience() - 30, 0);
         //희극 관객 5명마다 추가 포인트를 제공한다.
-        if (playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
+        if (data.playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
         return result;
     }
     private int amountFor(Performance aPerformance) throws Exception {
         int result;
 
-        switch (playFor(aPerformance).type()) {
+        switch (data.playFor(aPerformance).type()) {
             case TRAGEDY: //비극
                 result = 40000;
                 if (aPerformance.audience() > 30) {
@@ -76,7 +74,7 @@ public class Statement {
                 result += 300 * aPerformance.audience();
                 break;
             default:
-                throw new Exception((String.format("알 수 없는 장르 : %s", playFor(aPerformance).type())));
+                throw new Exception((String.format("알 수 없는 장르 : %s", data.playFor(aPerformance).type())));
         }
         return result;
     }
