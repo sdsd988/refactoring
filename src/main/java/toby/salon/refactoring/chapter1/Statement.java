@@ -28,19 +28,13 @@ public class Statement {
             result.append(String.format("%s: %s (%d석)\n", data.playFor(perf).name(), usd(data.amountFor(perf)), perf.audience()));
         }
 
-        result.append(String.format("총액: %s\n", usd(totalAmount())));
+        result.append(String.format("총액: %s\n", usd(data.totalAmount())));
         result.append(String.format("적립 포인트: %d점\n", data.totalVolumeCredits()));
 
         return result.toString();
     }
 
-    private int totalAmount() throws Exception {
-        int result = 0;
-        for (Performance perf : data.invoice().performances()) {
-            result += data.amountFor(perf);
-        }
-        return result;
-    }
+
 
     private String usd(int amount) {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);
