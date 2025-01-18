@@ -29,7 +29,7 @@ public class Statement {
         }
 
         result.append(String.format("총액: %s\n", usd(totalAmount())));
-        result.append(String.format("적립 포인트: %d점\n", totalVolumeCredits()));
+        result.append(String.format("적립 포인트: %d점\n", data.totalVolumeCredits()));
 
         return result.toString();
     }
@@ -41,14 +41,6 @@ public class Statement {
         }
         return result;
     }
-    private int totalVolumeCredits() throws Exception {
-        int volumeCredits = 0;
-        for (Performance perf : data.invoice().performances()) {
-            volumeCredits += data.volumeCreditsFor(perf);
-        }
-        return volumeCredits;
-    }
-
 
     private String usd(int amount) {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);

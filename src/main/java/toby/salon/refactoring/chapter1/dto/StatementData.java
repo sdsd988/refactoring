@@ -45,4 +45,12 @@ public record StatementData(
         if (playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
         return result;
     }
+
+    public int totalVolumeCredits() throws Exception {
+        int volumeCredits = 0;
+        for (Performance perf : invoice().performances()) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+        return volumeCredits;
+    }
 }
