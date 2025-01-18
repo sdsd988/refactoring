@@ -44,17 +44,11 @@ public class Statement {
     private int totalVolumeCredits() throws Exception {
         int volumeCredits = 0;
         for (Performance perf : data.invoice().performances()) {
-            volumeCredits += volumeCreditsFor(perf);
+            volumeCredits += data.volumeCreditsFor(perf);
         }
         return volumeCredits;
     }
-    private int volumeCreditsFor(Performance aPerformance) throws Exception {
-        int result = 0;
-        result += Math.max(aPerformance.audience() - 30, 0);
-        //희극 관객 5명마다 추가 포인트를 제공한다.
-        if (data.playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
-        return result;
-    }
+
 
     private String usd(int amount) {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);

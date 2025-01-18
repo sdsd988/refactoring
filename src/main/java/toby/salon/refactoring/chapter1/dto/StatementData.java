@@ -37,4 +37,12 @@ public record StatementData(
         }
         return result;
     }
+
+    public int volumeCreditsFor(Performance aPerformance) throws Exception {
+        int result = 0;
+        result += Math.max(aPerformance.audience() - 30, 0);
+        //희극 관객 5명마다 추가 포인트를 제공한다.
+        if (playFor(aPerformance).type() == Type.COMEDY) result += Math.floor(aPerformance.audience() / 5);
+        return result;
+    }
 }
