@@ -7,14 +7,10 @@ import java.util.Locale;
 
 public class Statement {
 
-    private Invoice invoice;
-    private Plays plays;
     private StatementData data;
 
-    public Statement(StatementData data,Invoice invoice, Plays plays) {
-        this.data = data;
-        this.invoice = invoice;
-        this.plays = plays;
+    public Statement(Invoice invoice, Plays plays) {
+        this.data = new StatementData(invoice,plays);
     }
 
     public String statement() throws Exception {
@@ -33,8 +29,6 @@ public class Statement {
 
         return result.toString();
     }
-
-
 
     private String usd(int amount) {
         return NumberFormat.getCurrencyInstance(Locale.US).format(amount/100);
